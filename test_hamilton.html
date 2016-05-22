@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+
+<body>
+<div> Lyrical Themes in Hamilton </div>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script>
+
+// Theme Name 	Song Name	Start Timestamp (mm:ss)	End Timestamp (mm:ss)	Time Start (sec)	Time End (sec)	Length (sec)  Song Number
+data =  [
+["none", "", "", "", 0, 3, 3, 1 ],
+["How Does",	"Alexander Hamilton",	"0:00:03",	"0:00:18",	3,	18,	16, 1],
+["none", "", "", "", 18, 77, 77-18, 1 ],
+["Alexander Hamilton",	"Alexander Hamilton",	"0:01:17",	"0:01:32",	77,	92,	16, 1],
+["none", "", "", "", 92, 153, 153-92, 1 ],
+["In New York",	"Alexander Hamilton",	"0:02:33",	"0:02:44",	153,	164,	12, 1],
+["Alexander Hamilton",	"Alexander Hamilton",	"0:02:45",	"0:03:56",	165,	236,	72, 1],
+
+["none", "", "", "", 0, 13, 13, 2 ],
+["Aaron Burr, Sir",	"Aaron Burr, Sir",	"0:00:13",	"0:00:36",	13,	36,	24,  2],
+["none", "", "", "", 36, 58, 22, 2 ],
+["Talk Less, Smile More",	"Aaron Burr, Sir",	"0:00:58",	"0:01:30",	58,	90,	33, 2],
+["none", "", "", "", 90, 137, 47, 2 ],
+["Stand For Nothing",	"Aaron Burr, Sir",	"0:02:17",	"0:02:31",	137,	151,	15, 2]
+// ["My Shot",	"My Shot",	"0:00:00",	"0:00:09",	0,	9,	10],
+// ["King's College",	"My Shot",	"0:00:10",	"0:00:31",	10,	31,	22],
+// ["My Shot",	"My Shot",	"0:01:13",	"0:02:08",	73,	128,	56],
+// ["My Shot",	"My Shot",	"0:02:49",	"0:03:08",	169,	188,	20],
+// ["Imagine Death",	"My Shot",	"0:03:51",	"0:04:31",	231,	271,	41],
+// ["My Shot",	"My Shot",	"0:04:56",	"0:05:33",	296,	333,	38] 
+];
+
+
+var x = d3.scale.linear()
+    .rangeRound([0, width]);
+
+x.domain([0, d3.max(data, function(d) { return d[5]; })]);
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+	barHeight = 40,
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+  
+  color.domain(d3.keys(data[0]));
+
+// https://bl.ocks.org/mbostock/3886208
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.selectAll("rect")
+      .data(data)
+    .enter().append("rect")
+      .attr("width", function(d) {return d[6]})
+      .attr("x", function(d) { return d[4]; })
+      .attr("y", function(d) { return d[7]*70; })
+      .attr("height", function(d) { return barHeight; })
+      .style("fill", function(d) { return color(d[0]); });
+
+</script>
+</body>
