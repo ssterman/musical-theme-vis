@@ -6,9 +6,9 @@
 </head>
 
 <body>
-    <h3> Lyrical Themes in Hamilton </h3>
+    <h1> Lyrical Themes in Hamilton </h1>
     <div id="div1"> Whole Musical </div>
-    <div id="div2"> By Song </div>
+    <!-- <div id="div2"> By Song </div> -->
 
 
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -32,13 +32,26 @@
     ["Stand For Nothing",	"Aaron Burr, Sir",	"0:02:17",	"0:02:31",	137,	151,	15, 2, 236+137]
     ];
 
+    //secondary data set: 
+    //name, index, start seconds
+    songs = [["Alexander Hamilton", 1, 0], ["Aaron Burr, Sir", 2, 236]];
+
 
 
     //setup 
+    var window_change_height = 50;
+
+    var barHeight = 40;
+
+    //update this when get more data
+    var numSongs = 2;
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = window.innerWidth,
-        height = 100;
+        height = 1000;
+
+    //bool to control animation direction
+    var transition_to_split = false;
 
     var x_pos_whole_musical = function(d) {
       return d[8];
@@ -49,16 +62,23 @@
     };
 
     var y_pos_by_song = function(d) {
-      return d[7]*height;
+      return d[7]*100;
     };
 
-    var width_of_song = function(d) {
+    var y_text_pos_by_song = function(d) {
+        return d[1]*100 - 5;    
+    };
+
+    var width_of_theme = function(d) {
       return d[6];
     };
 
+    var y_pos_by_change = function(d, w) {
+        console.log((w - window_change_height)/100);
+        // console.log(d[7] * height/(w - window_change_height));
+        return d[7] * (w - window_change_height);
+    }
 
-    var barHeight = 40;
-    var numSongs = 2;
 
     //scaling
     var x = d3.scale.linear()
@@ -71,53 +91,90 @@
       
     color.domain(d3.keys(data[0]));
 
+    //update function implements animation
+    function update(data) {
+        if (transition_to_split) {
+            svg.selectAll("rect")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("x", function(d) { return x_pos_by_song(d); })
+                    .attr("y", function(d) { return y_pos_by_song(d); });
+            
+            svg.selectAll("text")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("x", function(d) { return 0; })
+                    .attr("y", function(d) { return y_text_pos_by_song(d); })
+                    .text(function(d) { return d[0] ;});
+        } else {
+            svg.selectAll("rect")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("x", function(d) { return x_pos_whole_musical(d); })
+                    .attr("y", 0);
 
+            svg.selectAll("text")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("x", function(d) { return d[2]; })
+                    .attr("y", function(d) { return -5; })
+                    .text(function(d) { return d[0] ;});
+        }
+    }
 
+    //display data, starting in a single bar for the whole musical
     var svg = d3.select("#div1").append("svg")
         .attr("width", width)
         .attr("height", height)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    svg.selectAll("rect")
-          .data(data)
-        .enter().append("rect")
-          .attr("width", function(d) {return width_of_song(d);})
-          .attr("x", function(d) {return x_pos_whole_musical(d)})
-          .attr("height", function(d) { return barHeight; })
-          .style("fill", function(d) { return color(d[0]); });
-
-
-    var svg_songs = d3.select("#div2").append("svg")
-            .attr("width", width)
-            .attr("height", height*numSongs*2);
-
-    //for each song, put it in its own g
+    
     for (var ns = 1; ns <= numSongs; ns++) {
-        var g = svg_songs.append("g")
+        var g = svg.append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         g.selectAll("rect")
             .data(data)
           .enter().append("rect")
+            .attr("class", "enter")
             .filter(function(d) { 
               return d[7] == ns;})
-            .attr("width", function(d) {return width_of_song(d);})
-            .attr("x", function(d) { return x_pos_by_song(d); })
-            .attr("y", function(d) { return y_pos_by_song(d); })
+            .attr("width", function(d) {return width_of_theme(d);})
+            .attr("x", function(d) { return x_pos_whole_musical(d); })
             .attr("height", function(d) { return barHeight; })
             .style("fill", function(d) { return color(d[0]); });
-        
-        // g.selectAll("text")
-        //     .data(data)
-        //   .enter().append("text")
-        //     .filter(function(d, i) {
-        //       return d[7] == ns;
-        //     })
-        //     .attr("x", 20)
-        //     .attr("y", function(d) {y_pos_by_song(d)})
-        //     .text("Song Name" + ns);
+
+        g.selectAll("text")
+            .data(songs)
+          .enter().append("text")
+            .filter(function(d) {
+                return d[1] == ns;
+            })
+            .attr("x", function(d) { return d[2]; })
+            .attr("y", -5)
+            .text(function(d) { return d[0] ;});
     }
+
+    //necessary to get rid of the jerky first transition
+    update(data);
+    transition_to_split = true;
+
+    //animate on scroll
+    window.onscroll = function() {
+        if (document.body.scrollTop > window_change_height && transition_to_split) {
+            //split it apart into songs
+            update(data);
+            transition_to_split = false;
+        }  else if (document.body.scrollTop < window_change_height && !transition_to_split) {
+            //put it back together
+            update(data);
+            transition_to_split = true;
+        }
+    };
 
     </script>
 </body>
