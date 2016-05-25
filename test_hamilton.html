@@ -7,9 +7,9 @@
 
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
-    <div id="div1"> Whole Musical </div>
+    <div id="div1">  </div>
     <!-- <div id="div2"> By Song </div> -->
-
+    <div id="info_panel"> </div>
 
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script>
@@ -37,11 +37,14 @@
     songs = [["Alexander Hamilton", 1, 0], ["Aaron Burr, Sir", 2, 236]];
 
 
-
     //setup 
     var window_change_height = 50;
 
     var barHeight = 40;
+
+    var panel_showing = false;
+
+    var panel_num = -1;
 
     //update this when get more data
     var numSongs = 2;
@@ -62,11 +65,19 @@
     };
 
     var y_pos_by_song = function(d) {
-      return d[7]*100;
+        var h = d[7]*100;
+        if (panel_showing && panel_num < d[7]) {
+            h += 100;
+        }
+        return h;  
     };
 
     var y_text_pos_by_song = function(d) {
-        return d[1]*100 - 5;    
+        var h = d[1]*100 - 5;
+        if (panel_showing && panel_num < d[1]) {
+            h += 100;
+        }
+        return h;    
     };
 
     var width_of_theme = function(d) {
@@ -94,6 +105,7 @@
     //update function implements animation
     function update(data) {
         if (transition_to_split) {
+
             svg.selectAll("rect")
                 .attr("class", "update")
                 .transition()
@@ -108,6 +120,13 @@
                     .attr("x", function(d) { return 0; })
                     .attr("y", function(d) { return y_text_pos_by_song(d); })
                     .text(function(d) { return d[0] ;});
+
+            svg.selectAll("#info_panel")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("transform", "translate(" + 0 + "," + (panel_num * 100 + 50) + ")");
+
         } else {
             svg.selectAll("rect")
                 .attr("class", "update")
@@ -123,8 +142,38 @@
                     .attr("x", function(d) { return d[2]; })
                     .attr("y", function(d) { return -5; })
                     .text(function(d) { return d[0] ;});
+
+            svg.selectAll("#info_panel")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                    .attr("transform", "translate(" + 0 + "," + 50 + ")");
         }
     }
+
+    function hover_display(d, pid) {
+        console.log(d[0]);
+        panel_showing = true;
+        panel_num = d[7];
+
+        //get rid of the old panel
+        d3.select("#info_panel")
+            .remove();
+
+        var yoff = 50;
+        if (!transition_to_split) {
+            yoff = (panel_num * 100) + 50;
+        }
+        
+        //insert a new panel
+        d3.select("#" + pid)
+            .append("g")
+                .attr("id", "info_panel")
+                .attr("transform", "translate(" + 0 + "," + yoff + ")")
+                .append("foreignObject")
+                    .text(d[0]);
+
+    };
 
     //display data, starting in a single bar for the whole musical
     var svg = d3.select("#div1").append("svg")
@@ -133,9 +182,11 @@
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
+
     for (var ns = 1; ns <= numSongs; ns++) {
         var g = svg.append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("id", "g" + ns)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         g.selectAll("rect")
             .data(data)
@@ -146,7 +197,13 @@
             .attr("width", function(d) {return width_of_theme(d);})
             .attr("x", function(d) { return x_pos_whole_musical(d); })
             .attr("height", function(d) { return barHeight; })
-            .style("fill", function(d) { return color(d[0]); });
+            .style("fill", function(d) { return color(d[0]); })
+            .on('mouseenter', function(d){
+                if (d[0] != "none") {
+                    hover_display(d, this.parentNode.id);
+                    console.log(this.parentNode.id);
+                }
+            });
 
         g.selectAll("text")
             .data(songs)
