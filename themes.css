@@ -5,10 +5,17 @@ body {
 
 h1 {
 	font-variant: small-caps;
+	padding-left: 40px;
+	padding-top: 10px;
 }
 
 foreignObject {
-	background-color: red;
+	background-color: #ADADAD;
 	height: 100px;
 	width: 700px;
+	padding: 10px;
+}
+
+songs {
+	font-weight: lighter;
 }

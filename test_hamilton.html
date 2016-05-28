@@ -171,7 +171,7 @@
                 .attr("id", "info_panel")
                 .attr("transform", "translate(" + 0 + "," + yoff + ")")
                 .append("foreignObject")
-                    .text(d[0]);
+                    .text(d[0] + " in " + d[1]);
 
     };
 
@@ -199,10 +199,20 @@
             .attr("height", function(d) { return barHeight; })
             .style("fill", function(d) { return color(d[0]); })
             .on('mouseenter', function(d){
+                var currentRect = d3.select(this);
+                currentRect.transition().duration(500)
+                    .attr("height", barHeight + 10 );
+
                 if (d[0] != "none") {
                     hover_display(d, this.parentNode.id);
                     console.log(this.parentNode.id);
                 }
+
+            })
+            .on('mouseleave', function(d) {
+                var currentRect = d3.select(this);
+                currentRect.transition().duration(500)
+                    .attr("height", barHeight);
             });
 
         g.selectAll("text")
@@ -213,7 +223,7 @@
             })
             .attr("x", function(d) { return d[2]; })
             .attr("y", -5)
-            .text(function(d) { return d[0] ;});
+            .text(function(d) { return d[0] ;})
     }
 
     //necessary to get rid of the jerky first transition
