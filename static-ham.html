@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- references: https://bl.ocks.org/mbostock/3886208 -->
+<head>
+    <link rel="stylesheet" type="text/css" href="themes.css">
+</head>
+
+<body>
+    <h1> Lyrical Themes in Hamilton </h1>
+    <div id="div1">  </div>
+    <div id="div2"> </div>
+    <div id="info_panel"> </div>
+
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script>
+
+    // Theme Name 	Song Name	Start Timestamp (mm:ss)	End Timestamp (mm:ss)	Time Start (sec)	Time End (sec)	Length (sec)  Song Number,    Total Start Seconds
+    data =  [
+    ["none", "", "", "", 0, 3, 3, 1, 0 ],
+    ["How Does",	"Alexander Hamilton",	"0:00:03",	"0:00:18",	3,	18,	16, 1, 3],
+    ["none", "", "", "", 18, 77, 77-18, 1, 18 ],
+    ["Alexander Hamilton",	"Alexander Hamilton",	"0:01:17",	"0:01:32",	77,	92,	16, 1, 77],
+    ["none", "", "", "", 92, 153, 153-92, 1, 92],
+    ["In New York",	"Alexander Hamilton",	"0:02:33",	"0:02:44",	153,	164,	12, 1, 153],
+    ["Alexander Hamilton",	"Alexander Hamilton",	"0:02:45",	"0:03:56",	165,	236,	72, 1, 165],
+
+    ["none", "", "", "", 0, 13, 13, 2, 236+0 ],
+    ["Aaron Burr, Sir",	"Aaron Burr, Sir",	"0:00:13",	"0:00:36",	13,	36,	24,  2, 236+13],
+    ["none", "", "", "", 36, 58, 22, 2, 236+36 ],
+    ["Talk Less, Smile More",	"Aaron Burr, Sir",	"0:00:58",	"0:01:30",	58,	90,	33, 2, 236+58],
+    ["none", "", "", "", 90, 137, 47, 2, 236+90 ],
+    ["Stand For Nothing",	"Aaron Burr, Sir",	"0:02:17",	"0:02:31",	137,	151,	15, 2, 236+137]
+    ];
+
+    //secondary data set: 
+    //name, index, start seconds
+    songs = [["Alexander Hamilton", 1, 0], ["Aaron Burr, Sir", 2, 236]];
+
+
+    //setup 
+    var window_change_height = 50;
+
+    var barHeight = 40;
+
+    var panel_showing = false;
+
+    var panel_num = -1;
+
+    var highlighted_theme;
+
+    var standard_y = 10;
+
+    //update this when get more data
+    var numSongs = 2;
+
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = window.innerWidth,
+        height = 500;
+
+
+    var x_pos_whole_musical = function(d) {
+      return d[8];
+    };
+
+    var x_pos_by_song = function(d) {
+      return d[4];
+    };
+
+    var y_pos_by_song = function(d) {
+        var h = d[7]*100;
+        if (panel_showing && panel_num < d[7]) {
+            h += 100;
+        }
+        return h;  
+    };
+
+    var y_text_pos_by_song = function(d) {
+        var h = d[1]*100 - 5;
+        if (panel_showing && panel_num < d[1]) {
+            h += 100;
+        }
+        return h;    
+    };
+
+    var width_of_theme = function(d) {
+      return d[6];
+    };
+
+    var y_pos_by_change = function(d, w) {
+        console.log((w - window_change_height)/100);
+        // console.log(d[7] * height/(w - window_change_height));
+        return d[7] * (w - window_change_height);
+    }
+
+
+    //scaling
+    var x = d3.scale.linear()
+        .rangeRound([0, width]);
+
+    x.domain([0, d3.max(data, function(d) { return d[5]; })]);
+
+    var color = d3.scale.ordinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+      
+    color.domain(d3.keys(data[0]));
+
+    function elongate_bar(d, data, svg, songs) {
+            svg.selectAll("rect")
+                .attr("class", "update")
+                .transition()
+                    .duration(750)
+                        .attr("height", function(d1) {
+                            if (d1[0] == d[0] && d[0] != "none") {
+                                return barHeight + 20;
+                            } else {
+                                return barHeight;
+                            }
+                        })
+                        .attr("y", function(d1) {
+                            if (d1[0] == d[0] && d[0] != "none") {
+                                if (songs) {
+                                    return y_pos_by_song(d1) - 10;
+                                }
+                                return standard_y - 10; 
+                            } else {
+                                if (songs) {
+                                    return y_pos_by_song(d1);
+                                }
+                                return standard_y;                             
+                            }
+                        });
+    }
+
+    function reset_bar(d, data, svg, songs) {
+        svg.selectAll("rect")
+            .attr("class", "update")
+            .transition()
+                .duration(750)
+                    .attr("height", barHeight)
+                    .attr("y", function(d1) {
+                        if (songs) {
+                            return y_pos_by_song(d1);
+                        }
+                        return standard_y; 
+                    });
+    }
+
+
+    function hover_display(d, pid) {
+        console.log(d[0]);
+        panel_showing = true;
+        panel_num = d[7];
+
+        //get rid of the old panel
+        d3.select("#info_panel")
+            .remove();
+
+        var yoff = 70;
+        // if (!transition_to_split) {
+        //     yoff = (panel_num * 100) + 50;
+        //  }
+
+        if (d[0] != "none") {
+            //insert a new panel
+            d3.select("#" + pid)
+                .append("g")
+                    .attr("id", "info_panel")
+                    .attr("transform", "translate(" + 0 + "," + yoff + ")")
+                    .append("foreignObject")
+                        .text("Theme: " + d[0] + " in Song:  " + d[1]);
+        }
+
+    };
+
+    //display data, starting in a single bar for the whole musical
+    var svg = d3.select("#div1").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+
+    for (var ns = 1; ns <= numSongs; ns++) {
+        var g = svg.append("g")
+            .attr("id", "g" + ns)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        g.selectAll("rect")
+            .data(data)
+          .enter().append("rect")
+            .attr("class", "enter")
+            .filter(function(d) { 
+              return d[7] == ns;})
+            .attr("width", function(d) {return width_of_theme(d);})
+            .attr("x", function(d) { return x_pos_whole_musical(d); })
+            .attr("y", standard_y)
+            .attr("height", function(d) { return barHeight; })
+            .style("fill", function(d) { return color(d[0]); })
+            .on('mouseenter', function(d){
+                elongate_bar(d, data, svg, false);
+                hover_display(d, this.parentNode.id);
+                console.log(this.parentNode.id);
+
+
+            })
+            .on('mouseleave', function(d) {
+                reset_bar(d, data, svg, false);
+            });
+
+        g.selectAll("text")
+            .data(songs)
+          .enter().append("text")
+            .filter(function(d) {
+                return d[1] == ns;
+            })
+            .attr("x", function(d) { return d[2]; })
+            .attr("y", standard_y-15)
+            .text(function(d) { return d[0] ;})
+    }
+
+
+//display data, split by songs
+    var svg_songs = d3.select("#div2").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+
+    for (var ns = 1; ns <= numSongs; ns++) {
+        var g2 = svg_songs.append("g")
+            .attr("id", "g" + ns)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        g2.selectAll("rect")
+            .data(data)
+          .enter().append("rect")
+            .attr("class", "enter")
+            .filter(function(d) { 
+              return d[7] == ns;})
+            .attr("width", function(d) {return width_of_theme(d);})
+            .attr("x", function(d) { return x_pos_by_song(d); })
+            .attr("y", function(d) { return y_pos_by_song(d); })
+            .attr("height", function(d) { return barHeight; })
+            .style("fill", function(d) { return color(d[0]); })
+            .on('mouseenter', function(d){
+                elongate_bar(d, data, svg_songs, true);
+                hover_display(d, this.parentNode.id);
+                console.log(this.parentNode.id);
+            })
+            .on('mouseleave', function(d) {
+                reset_bar(d, data, svg_songs, true);
+            });
+
+        g2.selectAll("text")
+            .data(songs)
+          .enter().append("text")
+            .filter(function(d) {
+                return d[1] == ns;
+            })
+            .attr("x", function(d) { return d[2]; })
+            .attr("y", function(d) { return y_pos_by_song(d)-15; })
+            .text(function(d) { return d[0] ;})
+    }
+
+    </script>
+</body>
