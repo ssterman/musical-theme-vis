@@ -207,7 +207,7 @@
             ip.append("br");
 
             ip.append("audio")
-                .attr("src", d.song_url)
+                .attr("src", d.song_url + "#t=" + d.start_sec + "," + d.end_sec + 1)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
 
