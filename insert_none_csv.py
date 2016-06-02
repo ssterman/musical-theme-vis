@@ -55,33 +55,35 @@ new_themes = []
 for song in songs:
 	song_themes = filter_themes(themes, song[SONG_NUMBER])
 
-	# if no themes present, add space for the length of the song
+	new_themes.append(none_entry(0, song[SONG_LENGTH], song))
+
+	# # if no themes present, add space for the length of the song
 	if len(song_themes) == 0:
-		new_themes.append(none_entry(0, song[SONG_LENGTH], song))
+		# new_themes.append(none_entry(0, song[SONG_LENGTH], song))
 		continue
 
-	# if first theme doesn't start at 0, add space at beginning of song
-	first_theme_start = song_themes[0][THEME_START] 
-	if first_theme_start != 0:
-		new_themes.append(none_entry(0, first_theme_start - 1, song))
+	# # if first theme doesn't start at 0, add space at beginning of song
+	# first_theme_start = song_themes[0][THEME_START] 
+	# if first_theme_start != 0:
+	# 	new_themes.append(none_entry(0, first_theme_start - 1, song))
 
-	curr_end = first_theme_start
+	# curr_end = first_theme_start
 
 	for theme in song_themes:
-		theme_start = theme[THEME_START]
-		if theme_start > curr_end + 1:
-			new_themes.append(none_entry(curr_end + 1, theme_start - 1, song))
+		# theme_start = theme[THEME_START]
+		# if theme_start > curr_end + 1:
+		# 	new_themes.append(none_entry(curr_end + 1, theme_start - 1, song))
 
 		new_themes.append(theme)
 
-		theme_end = theme[THEME_END]
-		if theme_end > curr_end:
-			curr_end = theme_end
+		# theme_end = theme[THEME_END]
+		# if theme_end > curr_end:
+		# 	curr_end = theme_end
 
     # if last theme doesn't end at end of song, add space at end of song
-	last_theme_end = song_themes[len(song_themes) - 1][THEME_END]
-	if last_theme_end != song[SONG_LENGTH]:
-		new_themes.append(none_entry(last_theme_end, song[SONG_LENGTH], song))
+	# last_theme_end = song_themes[len(song_themes) - 1][THEME_END]
+	# if last_theme_end != song[SONG_LENGTH]:
+	# 	new_themes.append(none_entry(last_theme_end, song[SONG_LENGTH], song))
 
 print new_themes
 with open("output.csv", "wb") as f:
