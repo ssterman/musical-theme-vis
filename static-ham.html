@@ -163,13 +163,29 @@
     }
 
 
+    // http://jsfiddle.net/subodhghulaxe/t568u/
+    function convertHex(hex,opacity){
+        hex = hex.replace('#','');
+        r = parseInt(hex.substring(0,2), 16);
+        g = parseInt(hex.substring(2,4), 16);
+        b = parseInt(hex.substring(4,6), 16);
+
+        result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
+        return result;
+    }
+
+
     function elongate_bar(d, data, svg, songs) {
+            var fill_color = "#ADADAD";
             svg.selectAll("rect")
                 .attr("class", "update")
                 .transition()
-                    .duration(750)
+                    .duration(500)
                         .attr("height", function(d1) {
-                            if (d1.theme_name == d.theme_name && d.theme_name != "none") {
+                            if (d == d1 && d.theme_name != "none") {
+                                fill_color = color(d.theme_name);
+                                return barHeight + 300;
+                            } else if (d1.theme_name == d.theme_name && d.theme_name != "none") {
                                 return barHeight + 20;
                             } else {
                                 return barHeight;
@@ -187,6 +203,9 @@
                                 }
                                 return standard_y;                             
                             }
+                        })
+                        .each("end", function() {
+                            document.getElementById("info_panel_1").style.backgroundColor = convertHex(fill_color, 30);
                         });
     }
 
@@ -287,11 +306,11 @@
 
 // display data, split by songs
     for (var ns = 1; ns <= numSongs; ns++) {
-        var svg_songs = d3.select("#div2").append("svg")
+        var svgs = d3.select("#div2").append("svg")
             .attr("width", width)
             .attr("height", height);
 
-        var g2 = svg_songs.append("g")
+        var g2 = svgs.append("g")
             .attr("id", "g" + ns)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -308,14 +327,14 @@
             .attr("x", function(d) { return x_pos_by_song(d); })
             .attr("y", function(d) { return y_pos_by_song(d); })
             .attr("height", function(d) { return barHeight; })
-            .style("fill", function(d) { return color(d.theme_name); });
-            // .on('mouseenter', function(d){
-            //     elongate_bar(d, data, svg_songs, true);
-            //     hover_display(d, this.parentNode.id, "#div2");
-            //     console.log(this.parentNode.id, "#div2");
-            // })
+            .style("fill", function(d) { return color(d.theme_name); })
+            .on('mouseenter', function(d){
+                // elongate_bar(d, data, svgs, true);
+                // hover_display(d, this.parentNode.id, "#div2");
+                // console.log(this.parentNode.id, "#div2");
+            });
             // .on('mouseleave', function(d) {
-            //     reset_bar(d, data, svg_songs, true);
+            //     reset_bar(d, data, svgs, true);
             // });
 
         g2.selectAll("text")
@@ -325,7 +344,7 @@
                 return d[1] == ns;
             })
             .attr("x", function(d) { return 0; })
-            .attr("y", function(d) { return y_pos_by_song(d)-15; })
+            .attr("y", function(d) { return -5; })
             .text(function(d) { return d[0] ;});
     }
 });
