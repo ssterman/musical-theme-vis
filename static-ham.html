@@ -274,17 +274,13 @@
             .on('mouseleave', function(d) {
                 reset_bar(d, data, svg, false);
             });
-    for (var ns = 1; ns <= numSongs; ns++) {
+        
         g.selectAll("text")
             .data(songs)
           .enter().append("text")
-            .filter(function(d) {
-                return d[1] == ns;
-            })
-            .attr("x", function(d) { console.log("x: ",parseInt(d[2],10)); return parseInt(d[2], 10); })
-            .attr("y", (standard_y-15))
-            .text(function(d) { console.log("SONGNAME: ", d[0]); return "SONGNAME: " + d[0];} );
-    }
+            .attr("x", function(d) { return x(parseInt(d[2], 10)); })
+            .attr("y", function(d) { return (standard_y-15); } )
+            .text(function(d) { return d[1];} );
 
 
 // display data, split by songs
