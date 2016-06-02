@@ -8,6 +8,9 @@ h1 {
 	padding-top: 10px;
 }
 
+#vis_container {
+
+}
 
 songs {
 	font-weight: lighter;
@@ -26,10 +29,16 @@ songs {
 
 #info_panel_1 {
 	height: 100px;
-	background-color: #ADADAD;
+	width: 100%;
+	text-align: center;
+}
+
+.info_panel {
 	width: 700px;
+	background-color: #ADADAD;
+	height: 100px;
 	padding: 10px;
-	float: left;
+	display: inline-block;
 }
 
 .theme-item:hover {

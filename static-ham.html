@@ -8,12 +8,13 @@
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
     <div id="themes-list"></div>
-    <div id="div1">  </div>
-    <div id="info_panel_1"> </div>
-    <div id="div2"> </div>
-    
-    <div id="info_panel"> </div>
-
+    <div id="vis_container">
+        <div id="div1">  </div>
+        <div id="info_panel_1"> </div>
+        <div id="div2"> </div>
+        
+        <div id="info_panel"> </div>
+    </div>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script>
 
@@ -32,14 +33,14 @@
     var unique_songs = [];
     var songs = [];
     data.forEach(function(datum) {
-        console.log(datum.song_number);
-        if (unique_songs.indexOf(datum.song_number) == -1) {
+        if (unique_songs.indexOf(datum.song_number) == -1 && datum.song_number != "") {
             unique_songs.push(datum.song_number);
             songs.push([datum.song_name, parseInt(datum.song_number, 10), parseInt(datum.total_start_sec, 10)]);
         }
     });
 
    var numSongs = songs.length;
+   console.log("numSongs: ", numSongs);
 
     function print_themes(unique_themes) {
         var current_theme;
@@ -70,7 +71,7 @@
                 .text(unique_themes[i]);
         }
     }
-    print_themes(unique_themes);
+    // print_themes(unique_themes);
 
 
     //setup 
@@ -105,7 +106,7 @@
 
 
     var x_pos_whole_musical = function(d) {
-        console.log("place: ", x(parseInt(d.total_start_sec, 10)));
+        // console.log("place: ", x(parseInt(d.total_start_sec, 10)));
       return x(parseInt(d.total_start_sec, 10));
     };
 
@@ -219,13 +220,11 @@
     var svg = d3.select("#div1").append("svg")
         .attr("width", width)
         .attr("height", height)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
 
         var g = svg.append("g")
             .attr("id", "g" + ns)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         g.selectAll("rect")
             .data(data)
@@ -241,8 +240,6 @@
                 elongate_bar(d, data, svg, false);
                 hover_display(d, this.parentNode.id, "#div1");
                 // console.log(this.parentNode.id);
-
-
             })
             .on('mouseleave', function(d) {
                 reset_bar(d, data, svg, false);
@@ -252,57 +249,59 @@
             .data(songs)
           .enter().append("text")
             .filter(function(d) {
+                console.log(parseInt(d[1], 10), ns);
+                console.log(parseInt(d[1], 10) == ns);
                 return d[1] == ns;
             })
-            .attr("x", function(d) { return d[2]; })
+            .attr("x", function(d) { console.log("x: ",parseInt(d[2],10)); return parseInt(d[2],10); })
             .attr("y", standard_y-15)
-            .text(function(d) { return d.theme_name ;})
+            .text(function(d) { console.log("SONGNAME: ", d[0]); return "DOOP" + d[0];} );
     }
 
 
-//display data, split by songs
-    // var svg_songs = d3.select("#div2").append("svg")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    //   .append("g")
-    //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
+// display data, split by songs
+    for (var ns = 1; ns <= 1; ns++) {
+        var svg_songs = d3.select("#div2").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-    // for (var ns = 1; ns <= numSongs; ns++) {
-    //     var g2 = svg_songs.append("g")
-    //         .attr("id", "g" + ns)
-    //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var g2 = svg_songs.append("g")
+            .attr("id", "g" + ns);
+            // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    //     g2.selectAll("rect")
-    //         .data(data)
-    //       .enter().append("rect")
-    //         .attr("class", "enter")
-    //         .filter(function(d) { 
-    //           return d.song_number == ns;})
-    //         .attr("width", function(d) {return width_of_theme(d);})
-    //         .attr("x", function(d) { return x_pos_by_song(d); })
-    //         .attr("y", function(d) { return y_pos_by_song(d); })
-    //         .attr("height", function(d) { return barHeight; })
-    //         .style("fill", function(d) { return color(d.theme_name); })
-    //         .on('mouseenter', function(d){
-    //             elongate_bar(d, data, svg_songs, true);
-    //             hover_display(d, this.parentNode.id);
-    //             console.log(this.parentNode.id);
-    //         })
-    //         .on('mouseleave', function(d) {
-    //             reset_bar(d, data, svg_songs, true);
-    //         });
+        g2.selectAll("rect")
+            .data(data)
+          .enter()
+            .append("rect")
+            .filter(function(d) { 
+              return d.song_number == ns;
+            })
+            .attr("class", "enter")
+            .attr("theme", function(d) { return d.theme_name; })
+            .attr("width", function(d) {return width_of_theme(d);})
+            .attr("x", function(d) { return x_pos_by_song(d); })
+            .attr("y", function(d) { return y_pos_by_song(d); })
+            .attr("height", function(d) { return barHeight; })
+            .style("fill", function(d) { return color(d.theme_name); });
+            // .on('mouseenter', function(d){
+            //     elongate_bar(d, data, svg_songs, true);
+            //     hover_display(d, this.parentNode.id, "#div2");
+            //     console.log(this.parentNode.id, "#div2");
+            // })
+            // .on('mouseleave', function(d) {
+            //     reset_bar(d, data, svg_songs, true);
+            // });
 
-    //     g2.selectAll("text")
-    //         .data(songs)
-    //       .enter().append("text")
-    //         .filter(function(d) {
-    //             return d[1] == ns;
-    //         })
-    //         .attr("x", function(d) { return d.start_timestamp; })
-    //         .attr("y", function(d) { return y_pos_by_song(d)-15; })
-    //         .text(function(d) { return d.theme_name ;})
-    // }
+        // g2.selectAll("text")
+        //     .data(songs)
+        //   .enter().append("text")
+        //     .filter(function(d) {
+        //         return d[1] == ns;
+        //     })
+        //     .attr("x", function(d) { return d.start_timestamp; })
+        //     .attr("y", function(d) { return y_pos_by_song(d)-15; })
+        //     .text(function(d) { return d.theme_name ;})
+    }
 });
     </script>
 </body>
