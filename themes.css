@@ -18,3 +18,14 @@ foreignObject {
 songs {
 	font-weight: lighter;
 }
+
+#themes-list {
+	padding-left: 40px;
+	font-weight: bold;
+}
+
+.theme-item {
+	padding: 10px 5px;
+	width: 250px;
+	font-weight: normal;
+}
