@@ -8,12 +8,6 @@ h1 {
 	padding-top: 10px;
 }
 
-foreignObject {
-	background-color: #ADADAD;
-	height: 100px;
-	width: 700px;
-	padding: 10px;
-}
 
 songs {
 	font-weight: lighter;
@@ -28,4 +22,11 @@ songs {
 	padding: 10px 5px;
 	width: 250px;
 	font-weight: normal;
+}
+
+#info_panel_1 {
+	height: 100px;
+	background-color: #ADADAD;
+	width: 700px;
+	padding: 10px;
 }
