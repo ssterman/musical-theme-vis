@@ -22,7 +22,7 @@
     var unique_themes = [];
     data.forEach(function(datum) {
         // console.log(datum.theme_name);
-        if (unique_themes.indexOf(datum.theme_name) == -1) {
+        if (unique_themes.indexOf(datum.theme_name) == -1 && datum.theme_name != "none") {
             unique_themes.push(datum.theme_name);
         }
     });
@@ -208,14 +208,23 @@
             var ip = d3.select("#info_panel_1")
                 .append("div")
                     .attr("class", "info_panel")
-                    .text("Theme: " + d.theme_name + " in Song:  " + d.song_name);
+                    .text('Theme: ' + d.theme_name + ' in Song: "' + d.song_name + '"');
 
+
+
+            ip.append("br");
             ip.append("br");
 
             ip.append("audio")
+                .attr("class", "audio-player")
                 .attr("src", d.song_url + "#t=" + d.start_sec + "," + d.end_sec + 1)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
+
+            ip.append("p");
+
+            ip.append("test")
+                .text("Lyrics:");
 
         }
 

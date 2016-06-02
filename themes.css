@@ -29,16 +29,28 @@ songs {
 	padding: 10px 10px;
 	width: 250px;
 	font-weight: normal;
+	float: left;
+	border-radius: 5px;
+}
+
+#info_panel {
+	font-weight: bold;
 }
 
 #info_panel_1 {
-	height: 100px;
+	height: 150px;
 	background-color: #ADADAD;
-	width: 700px;
-	padding: 10px;
-	float: left;
+	width: 100%;
+	padding: 20px;
+	margin-left: -10px;
+	margin-top: 20px;
 	text-align: center;
 	border-radius: 5px;
+	font-size: 20px;
+}
+
+#audio {
+	padding: 10px;
 }
 
 .theme-item:hover {
