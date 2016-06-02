@@ -231,9 +231,10 @@
             ip.append("br");
             ip.append("br");
 
+            var end_time = parseInt(d.end_sec) + 1
             ip.append("audio")
                 .attr("class", "audio-player")
-                .attr("src", d.song_url + "#t=" + d.start_sec + "," + d.end_sec + 1)
+                .attr("src", d.song_url + "#t=" + d.start_sec + "," + end_time)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
 
