@@ -61,6 +61,7 @@
     });
 
    var numSongs = songs.length;
+   var current_color;
 
     function print_themes(unique_themes) {
         var current_theme;
@@ -74,13 +75,18 @@
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
+                                current_color = color(d.theme_name);
                                 elongate_bar(d, data, svg, false); 
                                 hover_display(d, this.parentNode.id);          
                             }
                         })
 
+                        this.style.backgroundColor = current_color;
+
                     })
+                
                     .on('mouseleave', function(d) {
+                        this.style.backgroundColor = "#EEEEEE";
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
                                 reset_bar(d, data, svg, false);         
