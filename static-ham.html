@@ -23,7 +23,7 @@
     var unique_themes = [];
     data.forEach(function(datum) {
         // console.log(datum.theme_name);
-        if (unique_themes.indexOf(datum.theme_name) == -1) {
+        if (unique_themes.indexOf(datum.theme_name) == -1 && datum.theme_name != "none") {
             unique_themes.push(datum.theme_name);
         }
     });
@@ -41,6 +41,8 @@
 
    var numSongs = songs.length;
    console.log("numSongs: ", numSongs);
+   var current_color;
+   var num_clips = 0;
 
     function print_themes(unique_themes) {
         var current_theme;
@@ -54,13 +56,20 @@
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
+                                num_clips++;
+                                current_color = color(d.theme_name);
                                 elongate_bar(d, data, svg, false); 
                                 hover_display(d, this.parentNode.id, "#div1");          
                             }
                         })
 
+                        this.style.backgroundColor = current_color;
+
                     })
+                
                     .on('mouseleave', function(d) {
+                        num_clips = 0;
+                        this.style.backgroundColor = "#EEEEEE";
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
                                 reset_bar(d, data, svg, false);         
@@ -203,14 +212,23 @@
             var ip = d3.select("#info_panel_1")
                 .append("div")
                     .attr("class", "info_panel")
-                    .text("Theme: " + d.theme_name + " in Song:  " + d.song_name);
+                    .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>" +'This theme appears ' + num_clips + ' times');
 
+
+
+            ip.append("br");
             ip.append("br");
 
             ip.append("audio")
+                .attr("class", "audio-player")
                 .attr("src", d.song_url + "#t=" + d.start_sec + "," + d.end_sec + 1)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
+
+            ip.append("p");
+
+            ip.append("test")
+                .text("Lyrics:");
 
         }
 

@@ -25,20 +25,30 @@ songs {
 	padding: 10px 10px;
 	width: 250px;
 	font-weight: normal;
-}
-
-#info_panel_1 {
-	height: 100px;
-	width: 100%;
+	float: left;
+	border-radius: 5px;
 	text-align: center;
 }
 
-.info_panel {
-	width: 700px;
+#info_panel {
+	font-weight: bold;
+}
+
+#info_panel_1 {
+
+	height: 150px;
 	background-color: #ADADAD;
-	height: 100px;
+	width: 100%;
+	padding: 20px;
+	margin-left: -10px;
+	margin-top: 20px;
+	text-align: center;
+	border-radius: 5px;
+	font-size: 20px;
+}
+
+#audio {
 	padding: 10px;
-	display: inline-block;
 }
 
 .theme-item:hover {
