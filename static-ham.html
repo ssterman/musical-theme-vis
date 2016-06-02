@@ -103,13 +103,13 @@
 
     //scaling
     var x = d3.scale.linear()
-        .rangeRound([0, width]);
+        .rangeRound([0, width - margin.left]);
 
     x.domain([0, d3.max(data, function(d) { return parseInt(d.total_start_sec, 10) + parseInt(d.length_sec, 10); })]);
 
 
     var songx = d3.scale.linear()
-        .rangeRound([0, width * .4]);
+        .rangeRound([0, width * .4 - margin.left]);
 
     songx.domain([0, d3.max(data, function(d) { return parseInt(d.length_sec, 10); })]);
 
