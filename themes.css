@@ -29,6 +29,13 @@ songs {
 	padding: 10px 10px;
 	width: 250px;
 	font-weight: normal;
+}
+
+#info_panel_1 {
+	height: 100px;
+	background-color: #ADADAD;
+	width: 700px;
+	padding: 10px;
 	float: left;
 	text-align: center;
 	border-radius: 5px;
