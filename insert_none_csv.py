@@ -69,7 +69,7 @@ for song in songs:
 
 	for theme in song_themes:
 		theme_start = theme[THEME_START]
-		if theme_start > curr_end:
+		if theme_start > curr_end + 1:
 			new_themes.append(none_entry(curr_end + 1, theme_start - 1, song))
 
 		new_themes.append(theme)
@@ -86,4 +86,12 @@ for song in songs:
 print new_themes
 with open("output.csv", "wb") as f:
 	writer = csv.writer(f)
+	writer.writerow(["theme_name","song_name","start_timestamp","end_timestamp","start_sec","end_sec","length_sec","song_number","total_start_sec","song_url","lyrics"])
 	writer.writerows(new_themes)
+
+just_themes = []
+for theme in themes:
+	if theme[0] not in just_themes:
+		just_themes.append(theme[0])
+print just_themes
+
