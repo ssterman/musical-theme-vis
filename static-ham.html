@@ -7,7 +7,7 @@
 
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
-    <div id="themes-list">Themes</div>
+    <div id="themes-list"></div>
     <div id="div1">  </div>
     <div id="div2"> </div>
     
@@ -81,7 +81,6 @@
 
                     })
                     .on('mouseleave', function(d) {
-                        // console.log("theme reset");
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
                                 reset_bar(d, data, svg, false);         
