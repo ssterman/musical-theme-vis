@@ -232,9 +232,10 @@
             ip.append("br");
 
             var end_time = parseInt(d.end_sec) + 1
+            var song_url = d.song_url.substring(6) // everything after "music/"
             ip.append("audio")
                 .attr("class", "audio-player")
-                .attr("src", d.song_url + "#t=" + d.start_sec + "," + end_time)
+                .attr("src", "music/" + encodeURIComponent(song_url) + "#t=" + d.start_sec + "," + end_time)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
 
