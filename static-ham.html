@@ -205,7 +205,7 @@
                             }
                         })
                         .each("end", function() {
-                            document.getElementById("info_panel_1").style.backgroundColor = convertHex(fill_color, 30);
+                            d3.select("#info_panel_1").transition().duration(100).style("background-color", convertHex(fill_color, 30));
                         });
     }
 
