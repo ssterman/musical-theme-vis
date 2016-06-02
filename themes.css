@@ -31,6 +31,7 @@ songs {
 	font-weight: normal;
 	float: left;
 	border-radius: 5px;
+	text-align: center;
 }
 
 #info_panel {

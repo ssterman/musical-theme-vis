@@ -41,6 +41,7 @@
 
    var numSongs = songs.length;
    var current_color;
+   var num_clips = 0;
 
     function print_themes(unique_themes) {
         var current_theme;
@@ -54,6 +55,7 @@
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
+                                num_clips++;
                                 current_color = color(d.theme_name);
                                 elongate_bar(d, data, svg, false); 
                                 hover_display(d, this.parentNode.id, "#div1");          
@@ -65,6 +67,7 @@
                     })
                 
                     .on('mouseleave', function(d) {
+                        num_clips = 0;
                         this.style.backgroundColor = "#EEEEEE";
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
@@ -208,7 +211,7 @@
             var ip = d3.select("#info_panel_1")
                 .append("div")
                     .attr("class", "info_panel")
-                    .text('Theme: ' + d.theme_name + ' in Song: "' + d.song_name + '"');
+                    .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>" +'This theme appears ' + num_clips + ' times');
 
 
 
