@@ -69,12 +69,13 @@
                 .append("div")
                     .on('mouseenter', function(d){
                         current_theme = this.textContent;
-                        // console.log(current_theme);
+                        console.log(current_theme);
 
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
-                                elongate_bar(d, data, svg, false);           
+                                elongate_bar(d, data, svg, false); 
+                                hover_display(d, this.parentNode.id);          
                             }
                         })
 
@@ -91,7 +92,7 @@
                 .text(unique_themes[i]);
         }
     }
-    // print_themes(unique_themes);
+    print_themes(unique_themes);
 
 
     //setup 
@@ -238,7 +239,6 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
 
-    for (var ns = 1; ns <= numSongs; ns++) {
         var g = svg.append("g")
             .attr("id", "g" + ns)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -248,8 +248,6 @@
           .enter().append("rect")
             .attr("class", "enter")
             .attr("theme", function(d) { return d.theme_name; })
-            .filter(function(d) { 
-              return d.song_number == ns;})
             .attr("width", function(d) {return width_of_theme(d);})
             .attr("x", function(d) { return x_pos_whole_musical(d); })
             .attr("y", standard_y)
@@ -265,7 +263,7 @@
             .on('mouseleave', function(d) {
                 reset_bar(d, data, svg, false);
             });
-
+    for (var ns = 1; ns <= numSongs; ns++) {
         g.selectAll("text")
             .data(songs)
           .enter().append("text")
