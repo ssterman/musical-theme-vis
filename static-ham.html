@@ -7,8 +7,10 @@
 
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
+    <div id="themes-list">Themes</div>
     <div id="div1">  </div>
     <div id="div2"> </div>
+    
     <div id="info_panel"> </div>
 
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -36,6 +38,47 @@
     //name, index, start seconds
     songs = [["Alexander Hamilton", 1, 0], ["Aaron Burr, Sir", 2, 236]];
 
+    var unique_themes = [];
+    data.forEach(function(datum) {
+        if (unique_themes.indexOf(datum[0]) > -1) {
+            return;
+        } else {
+            unique_themes.push(datum[0]);
+        }
+    });
+    console.log(unique_themes);
+
+    function print_themes(unique_themes) {
+        var current_theme;
+        for (var i = 0; i < unique_themes.length; i++) {
+            d3.select("#themes-list")
+                .append("div")
+                    .on('mouseenter', function(d){
+                        current_theme = this.textContent;
+                        console.log(current_theme);
+
+                        // find rects that have this theme and elongate_bar
+                        d3.selectAll("rect").each(function(d, i){
+                            if(d3.select(this).attr("theme") == current_theme){ 
+                                elongate_bar(d, data, svg, false);           
+                            }
+                        })
+
+                    })
+                    .on('mouseleave', function(d) {
+                        console.log("theme reset");
+                        d3.selectAll("rect").each(function(d, i){
+                            if(d3.select(this).attr("theme") == current_theme){ 
+                                reset_bar(d, data, svg, false);         
+                            }
+                        })
+                    })
+                .attr("class", "theme-item")
+                .text(unique_themes[i]);
+        }
+    }
+    print_themes(unique_themes);
+
 
     //setup 
     var window_change_height = 50;
@@ -55,7 +98,6 @@
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = window.innerWidth,
         height = 500;
-
 
     var x_pos_whole_musical = function(d) {
       return d[8];
@@ -188,6 +230,7 @@
             .data(data)
           .enter().append("rect")
             .attr("class", "enter")
+            .attr("theme", function(d) { return d[0]; })
             .filter(function(d) { 
               return d[7] == ns;})
             .attr("width", function(d) {return width_of_theme(d);})

@@ -36,6 +36,11 @@
     //name, index, start seconds
     songs = [["Alexander Hamilton", 1, 0], ["Aaron Burr, Sir", 2, 236]];
 
+    var unique_themes = [];
+    for (var i = 0; i < data.length; i++){
+        unique_themes.push(data[i][0]);
+    }
+    console.log(unique_themes);
 
     //setup 
     var window_change_height = 50;
