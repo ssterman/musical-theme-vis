@@ -107,6 +107,13 @@
 
     x.domain([0, d3.max(data, function(d) { return parseInt(d.total_start_sec, 10) + parseInt(d.length_sec, 10); })]);
 
+
+    var songx = d3.scale.linear()
+        .rangeRound([0, width * .4]);
+
+    songx.domain([0, d3.max(data, function(d) { return parseInt(d.length_sec, 10); })]);
+
+
     var color = d3.scale.ordinal()
         // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
         .range(["#bf0000", "#400000", "#cc6666", "#cc8166", "#4d3e39", "#4c1f00", "#f2853d", "#8c5b23", "#e5b073", "#ffaa00", "#332900", "#fff240", "#737156", "#adb359", "#6df23d", "#d0ffbf", "#1f5916", "#269954", "#1a3324", "#7ca692", "#39e6c3", "#00474d", "#39c3e6", "#004d73", "#40a6ff", "#001433", "#3056bf", "#737899", "#140099", "#5940ff", "#ff0044", "#8c0025", "#8c235b"]); 
@@ -120,7 +127,7 @@
     };
 
     var x_pos_by_song = function(d) {
-      return x(parseInt(d.start_sec, 10));
+      return songx(parseInt(d.start_sec, 10));
     };
 
     var y_pos_by_song = function(d) {
@@ -143,6 +150,11 @@
     var width_of_theme = function(d) {
       return x(parseInt(d.length_sec, 10)+1);
     };
+
+    var width_of_theme_by_song = function(d) {
+      return songx(parseInt(d.length_sec, 10)+1);
+    };
+
 
     var y_pos_by_change = function(d, w) {
         // console.log((w - window_change_height)/100);
@@ -296,7 +308,7 @@
             })
             .attr("class", "enter")
             .attr("theme", function(d) { return d.theme_name; })
-            .attr("width", function(d) {return width_of_theme(d);})
+            .attr("width", function(d) {return width_of_theme_by_song(d);})
             .attr("x", function(d) { return x_pos_by_song(d); })
             .attr("y", function(d) { return y_pos_by_song(d); })
             .attr("height", function(d) { return barHeight; })
