@@ -19,7 +19,7 @@ songs {
 }
 
 .theme-item {
-	padding: 10px 5px;
+	padding: 10px 10px;
 	width: 250px;
 	font-weight: normal;
 }
@@ -29,4 +29,9 @@ songs {
 	background-color: #ADADAD;
 	width: 700px;
 	padding: 10px;
+	float: left;
+}
+
+.theme-item:hover {
+	background-color: #ADADAD;
 }
