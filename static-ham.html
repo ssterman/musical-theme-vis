@@ -245,8 +245,6 @@
                     .attr("class", "info_panel")
                     .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>" +'This theme appears ' + num_clips + ' times');
 
-
-
             ip.append("br");
             ip.append("br");
 
@@ -288,12 +286,17 @@
             .attr("height", function(d) { return barHeight; })
             .style("fill", function(d) { return color(d.theme_name); })
             .on('mouseenter', function(d){
-                elongate_bar(d, data, svg, false);
-                hover_display(d, this.parentNode.id, "#div1");
-                // console.log(this.parentNode.id);
+                if (d.theme_name == "none") {
+                    reset_bar(d, data, svg, false);
+                    hover_display(d, this.parentNode.id, "#div1");
+                } else {
+                    elongate_bar(d, data, svg, false);
+                    hover_display(d, this.parentNode.id, "#div1");
+                    // console.log(this.parentNode.id);
+                }
             })
             .on('mouseleave', function(d) {
-                reset_bar(d, data, svg, false);
+                // reset_bar(d, data, svg, false);
             });
         
         g.selectAll("text")
