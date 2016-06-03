@@ -8,7 +8,7 @@
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
     <div id="vis_container">
-        <div id="songname"> </div>
+        <!-- <div id="songname"> </div> -->
         <div id="div1">  </div>
         <div id="info_panel_1"> </div>
         <div id="div2"><h2> Songs: </h2> </div>
@@ -52,7 +52,7 @@
                         current_theme = this.textContent;
 
                         // find rects that have this theme and elongate_bar
-                        d3.selectAll("rect").each(function(d, i){
+                        svg.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
                                 num_clips++;
                                 current_color = color(d.theme_name);
@@ -286,13 +286,13 @@
             var ip = d3.select("#info_panel_1")
                 .append("div")
                     .attr("class", "info_panel")
-                    .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>" +'This theme appears ' + num_clips + ' times');
+                    .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>");   // +'This theme appears ' + num_clips + ' times');
 
             ip.append("br");
             ip.append("br");
 
-            var end_time = parseInt(d.end_sec) + 1
-            var song_url = d.song_url.substring(6) // everything after "music/"
+            var end_time = parseInt(d.end_sec) + 1;
+            var song_url = d.song_url.substring(6); // everything after "music/"
             ip.append("audio")
                 .attr("class", "audio-player")
                 .attr("src", "music/" + encodeURIComponent(song_url) + "#t=" + d.start_sec + "," + end_time)
