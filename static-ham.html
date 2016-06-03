@@ -33,7 +33,9 @@
     var unique_songs = [];
     var songs = [];
     data.forEach(function(datum) {
-        if (unique_songs.indexOf(datum.song_number) == -1 && datum.song_number != "") {
+
+        if (unique_songs.indexOf(datum.song_number) == -1 && datum.theme_name != "none") {
+            console.log("hello there", datum); // TODO: remove debug code
             unique_songs.push(datum.song_number);
             songs.push([datum.song_name, parseInt(datum.song_number, 10), parseInt(datum.total_start_sec, 10)]);
         }
@@ -80,7 +82,7 @@
                 .text(unique_themes[i]);
         }
     }
-    // print_themes(unique_themes);
+    print_themes(unique_themes);
 
 
     //setup 
