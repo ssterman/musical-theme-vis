@@ -16,6 +16,8 @@
         <div id="info_panel"> </div>
     </div>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+    <script src="http://cherne.net/brian/resources/jquery.hoverIntent.js" type="text/javascript"></script>
     <script>
 
     d3.csv("output.csv", function(data) {
@@ -35,7 +37,6 @@
     data.forEach(function(datum) {
 
         if (unique_songs.indexOf(datum.song_number) == -1 && datum.theme_name != "none") {
-            console.log("hello there", datum); // TODO: remove debug code
             unique_songs.push(datum.song_number);
             songs.push([datum.song_name, parseInt(datum.song_number, 10), parseInt(datum.total_start_sec, 10)]);
         }
@@ -160,10 +161,10 @@
 
     var y_pos_by_act = function(d) {
         if (d.song_number > 23 ) {
-            console.log("y act 2");
+            //console.log("y act 2");
             return standard_y + 100;
         } else {
-            console.log("y act 1");
+            //console.log("y act 1");
             return standard_y;
         }
     };
@@ -260,7 +261,7 @@
     }
 
 
-    function hover_display(d, pid, div_id) {
+    function hover_display(d, div_id) {
         // console.log(d.theme_name);
         panel_showing = true;
         panel_num = d.song_number;
@@ -301,6 +302,23 @@
 
     };
 
+    function hoverIn(d){
+        console.log("hover in")
+        console.log(d)
+        if (d.theme_name == "none") {
+            reset_bar(d, data, svg, false);
+            hover_display(d, "#div1");
+        } else {
+            elongate_bar(d, data, svg, false);
+            hover_display(d, "#div1");
+            // console.log(this.parentNode.id);
+        }
+    };
+
+    function hoverOut(d) {
+        console.log("hover out");
+    };
+
     //display data, starting in a single bar for the whole musical
     // var svg = d3.select("#div1").append("svg")
     //     .attr("width", width)
@@ -321,16 +339,16 @@
     //         .attr("y", standard_y)
     //         .attr("height", function(d) { return barHeight; })
     //         .style("fill", function(d) { return color(d.theme_name); })
-    //         .on('mouseenter', function(d){
-    //             if (d.theme_name == "none") {
-    //                 reset_bar(d, data, svg, false);
-    //                 hover_display(d, this.parentNode.id, "#div1");
-    //             } else {
-    //                 elongate_bar(d, data, svg, false);
-    //                 hover_display(d, this.parentNode.id, "#div1");
-    //                 // console.log(this.parentNode.id);
-    //             }
-    //         })
+            // .on('mouseenter', function(d){
+            //     if (d.theme_name == "none") {
+            //         reset_bar(d, data, svg, false);
+            //         hover_display(d, this.parentNode.id, "#div1");
+            //     } else {
+            //         elongate_bar(d, data, svg, false);
+            //         hover_display(d, this.parentNode.id, "#div1");
+            //         // console.log(this.parentNode.id);
+            //     }
+            // })
     //         .on('mouseleave', function(d) {
     //             // reset_bar(d, data, svg, false);
     //         });
@@ -353,29 +371,27 @@
  
 for (var i = 1; i <= 2; i++) {
 
-        g.selectAll("rect")
+        var enter_set = g.selectAll("rect")
             .data(data)
-          .enter().append("rect")
+          .enter()
+
+        var rects = enter_set.append("rect")
             .attr("class", "enter")
             .attr("theme", function(d) { return d.theme_name; })
             .attr("width", function(d) {return width_of_theme_by_act(d);})
             .attr("x", function(d) { return x_pos_by_act(d); })
             .attr("y", function(d) { y_pos_by_act(d) } )
             .attr("height", function(d) { return barHeight; })
-            .style("fill", function(d) { return color(d.theme_name); })
-            .on('mouseenter', function(d){
-                if (d.theme_name == "none") {
-                    reset_bar(d, data, svg, false);
-                    hover_display(d, this.parentNode.id, "#div1");
-                } else {
-                    elongate_bar(d, data, svg, false);
-                    hover_display(d, this.parentNode.id, "#div1");
-                    // console.log(this.parentNode.id);
-                }
-            })
-            .on('mouseleave', function(d) {
-                // reset_bar(d, data, svg, false);
-            });
+            .style("fill", function(d) { return color(d.theme_name); });
+                    
+
+        rects.each(function(d, i) {
+          return $(this).hoverIntent((function() {
+            return hoverIn(d);
+          }), (function() {
+            return hoverOut(d);
+          }));
+        });
         
         g.selectAll("text")
             .data(songs)
