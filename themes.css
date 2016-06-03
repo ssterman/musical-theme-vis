@@ -19,6 +19,13 @@ songs {
 #themes-list {
 	padding-left: 40px;
 	font-weight: bold;
+	width: 40%;
+	float: right;
+}
+
+#div2 {
+	width: 50%;
+	float: left;
 }
 
 .theme-item {

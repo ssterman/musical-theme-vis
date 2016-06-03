@@ -7,12 +7,11 @@
 
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
-    <div id="themes-list"></div>
     <div id="vis_container">
         <div id="div1">  </div>
         <div id="info_panel_1"> </div>
-        <div id="div2"> </div>
-        
+        <div id="div2"><h2> Songs: </h2> </div>
+        <div id="themes-list"><h2> Themes: </h2></div>
         <div id="info_panel"> </div>
     </div>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -102,7 +101,8 @@
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = window.innerWidth - 100,
-        height = 200;
+        height = 200,
+        song_split_height = 100;
 
 
     //scaling
@@ -159,7 +159,8 @@
     };
 
     var y_pos_by_act = function(d) {
-        if (d.song_number > 23 ) {
+        if (parseInt(d.song_number, 10) > 23 ) {
+            console.log("KEJ:KJR");
             return standard_y + 100;
         } else {
             return standard_y;
@@ -386,8 +387,8 @@ for (var i = 1; i <= 2; i++) {
 // display data, split by songs
     for (var ns = 1; ns <= numSongs; ns++) {
         var svgs = d3.select("#div2").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("width", width * .5)
+            .attr("height", song_split_height);
 
         var g2 = svgs.append("g")
             .attr("id", "g" + ns)
