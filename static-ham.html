@@ -28,7 +28,7 @@
         }
     });
     // console.log(unique_themes);
-    console.log("numthemes: ", unique_themes.length);
+    // console.log("numthemes: ", unique_themes.length);
 
     var unique_songs = [];
     var songs = [];
@@ -40,7 +40,7 @@
     });
 
    var numSongs = songs.length;
-   console.log("numSongs: ", numSongs);
+   // console.log("numSongs: ", numSongs);
    var current_color;
    var num_clips = 0;
 
@@ -51,7 +51,7 @@
                 .append("div")
                     .on('mouseenter', function(d){
                         current_theme = this.textContent;
-                        console.log(current_theme);
+                        // console.log(current_theme);
 
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
@@ -136,7 +136,7 @@
     var x_pos_by_act = function(d) {
         // console.log("place: ", x(parseInt(d.total_start_sec, 10)));
     if (d.song_number > 23 ) {
-        console.log("act 2");
+        // console.log("act 2");
           return actx(parseInt(d.total_start_sec, 10) - act_two_starts_at_seconds);
     }
 
@@ -158,10 +158,8 @@
 
     var y_pos_by_act = function(d) {
         if (d.song_number > 23 ) {
-            console.log("y act 2");
             return standard_y + 100;
         } else {
-            console.log("y act 1");
             return standard_y;
         }
     };
@@ -207,7 +205,7 @@
 
 
     function elongate_bar(d, data, svg, songs) {
-            var fill_color = "#ADADAD";
+            var fill_color;
             svg.selectAll("rect")
                 .attr("class", "update")
                 .transition()
@@ -240,7 +238,7 @@
                         .each("end", function() {
                             d3.select("#info_panel_1").transition().duration(100).style("background-color", convertHex(fill_color, 30));
                         });
-    }
+    };
 
     function reset_bar(d, data, svg, songs) {
         svg.selectAll("rect")
@@ -255,7 +253,8 @@
                         // return standard_y;
                         return y_pos_by_act(d1);
                     });
-    }
+        d3.select("#info_panel_1").style("background-color", "#ADADAD");
+    };
 
 
     function hover_display(d, pid, div_id) {
@@ -350,7 +349,6 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
  
 for (var i = 1; i <= 2; i++) {
-
         g.selectAll("rect")
             .data(data)
           .enter().append("rect")
