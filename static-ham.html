@@ -7,12 +7,12 @@
 
 <body>
     <h1> Lyrical Themes in Hamilton </h1>
-    <div id="themes-list"></div>
     <div id="vis_container">
+        <div id="songname"> </div>
         <div id="div1">  </div>
         <div id="info_panel_1"> </div>
-        <div id="div2"> </div>
-        
+        <div id="div2"><h2> Songs: </h2> </div>
+        <div id="themes-list"><h2> Themes: </h2></div>
         <div id="info_panel"> </div>
     </div>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -30,7 +30,7 @@
         }
     });
     // console.log(unique_themes);
-    console.log("numthemes: ", unique_themes.length);
+    // console.log("numthemes: ", unique_themes.length);
 
     var unique_songs = [];
     var songs = [];
@@ -43,7 +43,7 @@
     });
 
    var numSongs = songs.length;
-   console.log("numSongs: ", numSongs);
+   // console.log("numSongs: ", numSongs);
    var current_color;
    var num_clips = 0;
 
@@ -54,7 +54,7 @@
                 .append("div")
                     .on('mouseenter', function(d){
                         current_theme = this.textContent;
-                        console.log(current_theme);
+                        // console.log(current_theme);
 
                         // find rects that have this theme and elongate_bar
                         d3.selectAll("rect").each(function(d, i){
@@ -103,7 +103,8 @@
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = window.innerWidth - 100,
-        height = 200;
+        height = 200,
+        song_split_height = 100;
 
 
     //scaling
@@ -138,12 +139,12 @@
 
     var x_pos_by_act = function(d) {
         // console.log("place: ", x(parseInt(d.total_start_sec, 10)));
-    if (d.song_number > 23 ) {
-        console.log("act 2");
-          return actx(parseInt(d.total_start_sec, 10) - act_two_starts_at_seconds);
-    }
-
-      return actx(parseInt(d.total_start_sec, 10));
+        if (parseInt(d.song_number, 10) > 23 ) {
+            console.log("act 2");
+              return actx(parseInt(d.total_start_sec, 10) - act_two_starts_at_seconds);
+        } else {
+          return actx(parseInt(d.total_start_sec, 10));
+        }
     };
 
     var x_pos_by_song = function(d) {
@@ -159,15 +160,19 @@
         return 10;  
     };
 
-    var y_pos_by_act = function(d) {
-        if (d.song_number > 23 ) {
-            //console.log("y act 2");
+
+    var y_pos_by_act = function(songnum) {
+        if (parseInt(songnum, 10) > 23 ) {
+            console.log("KEJ:KJR");
             return standard_y + 100;
         } else {
-            //console.log("y act 1");
             return standard_y;
         }
     };
+
+    var y_text_pos_by_act = function(d) {
+
+    }
 
     // var y_text_pos_by_song = function(d) {
     //     var h = d[1]*100 - 5;
@@ -190,11 +195,11 @@
     }
 
 
-    var y_pos_by_change = function(d, w) {
-        // console.log((w - window_change_height)/100);
-        // console.log(d[7] * height/(w - window_change_height));
-        return d.song_number * (w - window_change_height);
-    }
+    // var y_pos_by_change = function(d, w) {
+    //     // console.log((w - window_change_height)/100);
+    //     // console.log(d[7] * height/(w - window_change_height));
+    //     return d.song_number * (w - window_change_height);
+    // }
 
 
     // http://jsfiddle.net/subodhghulaxe/t568u/
@@ -210,14 +215,16 @@
 
 
     function elongate_bar(d, data, svg, songs) {
-            var fill_color = "#ADADAD";
-            svg.selectAll("rect")
+            var fill_color;
+            d3.selectAll("rect")
                 .attr("class", "update")
                 .transition()
                     .duration(500)
                         .attr("height", function(d1) {
                             if (d == d1 && d.theme_name != "none") {
+                                console.log("Theme name: ", d.theme_name);
                                 fill_color = color(d.theme_name);
+                                console.log(fill_color);
                                 return barHeight + 300;
                             } else if (d1.theme_name == d.theme_name && d.theme_name != "none") {
                                 return barHeight + 20;
@@ -231,19 +238,19 @@
                                     return y_pos_by_song(d1) - 10;
                                 }
                                 // return standard_y - 10;
-                                return y_pos_by_act(d1) - 10;  
+                                return y_pos_by_act(d1.song_number) - 10;  
                             } else {
                                 if (songs) {
                                     return y_pos_by_song(d1);
                                 }
                                 // return standard_y;
-                                return y_pos_by_act(d1); //                             
+                                return y_pos_by_act(d1.song_number); //                             
                             }
                         })
                         .each("end", function() {
                             d3.select("#info_panel_1").transition().duration(100).style("background-color", convertHex(fill_color, 30));
                         });
-    }
+    };
 
     function reset_bar(d, data, svg, songs) {
         svg.selectAll("rect")
@@ -256,9 +263,10 @@
                             return y_pos_by_song(d1);
                         }
                         // return standard_y;
-                        return y_pos_by_act(d1);
+                        return y_pos_by_act(d1.song_number);
                     });
-    }
+        d3.select("#info_panel_1").style("background-color", "#ADADAD");
+    };
 
 
     function hover_display(d, div_id) {
@@ -300,6 +308,8 @@
 
         }
 
+        d3.select("#songname").text(d.song_name);
+       
     };
 
     function hoverIn(d){
@@ -318,48 +328,6 @@
     function hoverOut(d) {
         console.log("hover out");
     };
-
-    //display data, starting in a single bar for the whole musical
-    // var svg = d3.select("#div1").append("svg")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    
-
-    //     var g = svg.append("g")
-    //         .attr("id", "g" + ns)
-    //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    //     g.selectAll("rect")
-    //         .data(data)
-    //       .enter().append("rect")
-    //         .attr("class", "enter")
-    //         .attr("theme", function(d) { return d.theme_name; })
-    //         .attr("width", function(d) {return width_of_theme(d);})
-    //         .attr("x", function(d) { return x_pos_whole_musical(d); })
-    //         .attr("y", standard_y)
-    //         .attr("height", function(d) { return barHeight; })
-    //         .style("fill", function(d) { return color(d.theme_name); })
-            // .on('mouseenter', function(d){
-            //     if (d.theme_name == "none") {
-            //         reset_bar(d, data, svg, false);
-            //         hover_display(d, this.parentNode.id, "#div1");
-            //     } else {
-            //         elongate_bar(d, data, svg, false);
-            //         hover_display(d, this.parentNode.id, "#div1");
-            //         // console.log(this.parentNode.id);
-            //     }
-            // })
-    //         .on('mouseleave', function(d) {
-    //             // reset_bar(d, data, svg, false);
-    //         });
-        
-    //     g.selectAll("text")
-    //         .data(songs)
-    //       .enter().append("text")
-    //         .attr("x", function(d) { return x(parseInt(d[2], 10)); })
-    //         .attr("y", function(d) { return (standard_y-15); } )
-    //         .text(function(d) { return d[1];} );
-
 
 // display data, starting in a single bar for the whole musical
     var svg = d3.select("#div1").append("svg")
@@ -380,7 +348,7 @@ for (var i = 1; i <= 2; i++) {
             .attr("theme", function(d) { return d.theme_name; })
             .attr("width", function(d) {return width_of_theme_by_act(d);})
             .attr("x", function(d) { return x_pos_by_act(d); })
-            .attr("y", function(d) { y_pos_by_act(d) } )
+            .attr("y", function(d) { y_pos_by_act(d.song_number) } )
             .attr("height", function(d) { return barHeight; })
             .style("fill", function(d) { return color(d.theme_name); });
                     
@@ -393,19 +361,13 @@ for (var i = 1; i <= 2; i++) {
           }));
         });
         
-        g.selectAll("text")
-            .data(songs)
-          .enter().append("text")
-            .attr("x", function(d) { return actx(parseInt(d[2], 10)); })
-            .attr("y", function(d) { return (y_pos_by_act(d)-15); } )
-            .text(function(d) { return d[1];} );
 }
 
 // display data, split by songs
     for (var ns = 1; ns <= numSongs; ns++) {
         var svgs = d3.select("#div2").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("width", width * .5)
+            .attr("height", song_split_height);
 
         var g2 = svgs.append("g")
             .attr("id", "g" + ns)
@@ -426,7 +388,7 @@ for (var i = 1; i <= 2; i++) {
             .attr("height", function(d) { return barHeight; })
             .style("fill", function(d) { return color(d.theme_name); })
             .on('mouseenter', function(d){
-                // elongate_bar(d, data, svgs, true);
+                elongate_bar(d, data, svgs, true);
                 // hover_display(d, this.parentNode.id, "#div2");
                 // console.log(this.parentNode.id, "#div2");
             });
