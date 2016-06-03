@@ -84,6 +84,8 @@
 
 
     //setup 
+    var act_two_starts_at_seconds = 4266;
+
     var window_change_height = 50;
 
     var barHeight = 40;
@@ -98,7 +100,7 @@
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = window.innerWidth - 100,
-        height = 100;
+        height = 200;
 
 
     //scaling
@@ -107,6 +109,11 @@
 
     x.domain([0, d3.max(data, function(d) { return parseInt(d.total_start_sec, 10) + parseInt(d.length_sec, 10); })]);
 
+
+    var actx = d3.scale.linear()
+        .rangeRound([0, width - margin.left]);
+
+    actx.domain([0, d3.max(data, function(d) { return 4266; })]);
 
     var songx = d3.scale.linear()
         .rangeRound([0, width * .4 - margin.left]);
@@ -126,8 +133,18 @@
       return x(parseInt(d.total_start_sec, 10));
     };
 
+    var x_pos_by_act = function(d) {
+        // console.log("place: ", x(parseInt(d.total_start_sec, 10)));
+    if (d.song_number > 23 ) {
+        console.log("act 2");
+          return actx(parseInt(d.total_start_sec, 10) - act_two_starts_at_seconds);
+    }
+
+      return actx(parseInt(d.total_start_sec, 10));
+    };
+
     var x_pos_by_song = function(d) {
-      return songx(parseInt(d.start_sec, 10));
+          return songx(parseInt(d.start_sec, 10));
     };
 
     var y_pos_by_song = function(d) {
@@ -137,6 +154,16 @@
         // // }
         // console.log("Logging: ", d.song_number);
         return 10;  
+    };
+
+    var y_pos_by_act = function(d) {
+        if (d.song_number > 23 ) {
+            console.log("y act 2");
+            return standard_y + 100;
+        } else {
+            console.log("y act 1");
+            return standard_y;
+        }
     };
 
     // var y_text_pos_by_song = function(d) {
@@ -154,6 +181,10 @@
     var width_of_theme_by_song = function(d) {
       return songx(parseInt(d.length_sec, 10)+1);
     };
+
+    var width_of_theme_by_act = function(d) {
+      return actx(parseInt(d.length_sec, 10)+1);
+    }
 
 
     var y_pos_by_change = function(d, w) {
@@ -196,12 +227,14 @@
                                 if (songs) {
                                     return y_pos_by_song(d1) - 10;
                                 }
-                                return standard_y - 10; 
+                                return standard_y - 10;
+                                // return y_pos_by_act(d1) - 10;  
                             } else {
                                 if (songs) {
                                     return y_pos_by_song(d1);
                                 }
-                                return standard_y;                             
+                                return standard_y;
+                                // return y_pos_by_act(d1); //                             
                             }
                         })
                         .each("end", function() {
@@ -219,7 +252,8 @@
                         if (songs) {
                             return y_pos_by_song(d1);
                         }
-                        return standard_y; 
+                        return standard_y;
+                        // return y_pos_by_act(d1);
                     });
     }
 
@@ -306,6 +340,48 @@
             .attr("y", function(d) { return (standard_y-15); } )
             .text(function(d) { return d[1];} );
 
+
+//display data, starting in a single bar for the whole musical
+//     var svg = d3.select("#div1").append("svg")
+//         .attr("width", width)
+//         .attr("height", height)
+//     var g = svg.append("g")
+//             .attr("id", "g" + ns)
+//             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+ 
+// for (var i = 1; i <= 2; i++) {
+
+//         g.selectAll("rect")
+//             .data(data)
+//           .enter().append("rect")
+//             .attr("class", "enter")
+//             .attr("theme", function(d) { return d.theme_name; })
+//             .attr("width", function(d) {return width_of_theme_by_act(d);})
+//             .attr("x", function(d) { return x_pos_by_act(d); })
+//             .attr("y", function(d) { y_pos_by_act(d) } )
+//             .attr("height", function(d) { return barHeight; })
+//             .style("fill", function(d) { return color(d.theme_name); })
+//             .on('mouseenter', function(d){
+//                 if (d.theme_name == "none") {
+//                     reset_bar(d, data, svg, false);
+//                     hover_display(d, this.parentNode.id, "#div1");
+//                 } else {
+//                     elongate_bar(d, data, svg, false);
+//                     hover_display(d, this.parentNode.id, "#div1");
+//                     // console.log(this.parentNode.id);
+//                 }
+//             })
+//             .on('mouseleave', function(d) {
+//                 // reset_bar(d, data, svg, false);
+//             });
+        
+//         g.selectAll("text")
+//             .data(songs)
+//           .enter().append("text")
+//             .attr("x", function(d) { return actx(parseInt(d[2], 10)); })
+//             .attr("y", function(d) { return (y_pos_by_act(d)-15); } )
+//             .text(function(d) { return d[1];} );
+// }
 
 // display data, split by songs
     for (var ns = 1; ns <= numSongs; ns++) {
