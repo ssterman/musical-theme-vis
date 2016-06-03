@@ -8,6 +8,14 @@ h1 {
 	padding-top: 10px;
 }
 
+h2, h3, h4, h5 {
+	font-variant: small-caps;
+}
+
+#songstitle {
+	padding-left: 40px;
+}
+
 #vis_container {
 
 }
