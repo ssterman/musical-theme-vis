@@ -45,7 +45,7 @@ songs {
 
 #info_panel_1 {
 
-	height: 150px;
+	height: 230px;
 	background-color: #ADADAD;
 	width: 100%;
 	padding: 20px;
@@ -62,4 +62,11 @@ songs {
 
 .theme-item:hover {
 	background-color: #ADADAD;
+}
+
+.lyrics {
+	overflow: auto;
+	height: 120px;
+	width: 50%;
+	margin-left: 24%;
 }
