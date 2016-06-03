@@ -314,9 +314,11 @@
         if (d.theme_name == "none") {
             reset_bar(d, data, svg, false);
             hover_display(d, "#div1");
+            song_split(d.theme_name);
         } else {
             elongate_bar(d, data, svg, false);
             hover_display(d, "#div1");
+            song_split(d.theme_name);
         }
     };
 
@@ -328,10 +330,10 @@
         .attr("width", width)
         .attr("height", height)
     var g = svg.append("g")
-            .attr("id", "g" + ns)
+            .attr("id", "g" + 1)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
  
-for (var i = 1; i <= 2; i++) {
+    for (var i = 1; i <= 2; i++) {
 
         var enter_set = g.selectAll("rect")
             .data(data)
@@ -357,47 +359,66 @@ for (var i = 1; i <= 2; i++) {
         
 }
 
-// display data, split by songs
-    for (var ns = 1; ns <= numSongs; ns++) {
-        var svgs = d3.select("#div2").append("svg")
-            .attr("width", width * .5)
-            .attr("height", song_split_height);
 
-        var g2 = svgs.append("g")
-            .attr("id", "g" + ns)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    function song_contains_theme(theme, number) {
+        var res = false;
+        data.forEach(function(datum) {
+            if (datum.theme_name == theme && datum.song_number == number) {
+                res = true;
+            } 
+        })
+        return res;
+    }
+  
 
-        g2.selectAll("rect")
-            .data(data)
-          .enter()
-            .append("rect")
-            .filter(function(d) { 
-              return d.song_number == ns;
-            })
-            .attr("class", "enter")
-            .attr("theme", function(d) { return d.theme_name; })
-            .attr("width", function(d) {return width_of_theme_by_song(d);})
-            .attr("x", function(d) { return x_pos_by_song(d); })
-            .attr("y", function(d) { return y_pos_by_song(d); })
-            .attr("height", function(d) { return barHeight; })
-            .style("fill", function(d) { return color(d.theme_name); });
-            // .on('mouseenter', function(d){
-            //     elongate_bar(d, data, svgs, true);
-            //     // hover_display(d, this.parentNode.id, "#div2");
-            // });
-            // .on('mouseleave', function(d) {
-            //     reset_bar(d, data, svgs, true);
-            // });
+    function song_split(theme_name) {
+        //  display data, split by songs
+        d3.select("#div2").selectAll("svg").remove();
 
-        g2.selectAll("text")
-            .data(songs)
-          .enter().append("text")
-            .filter(function(d) {
-                return d[1] == ns;
-            })
-            .attr("x", function(d) { return 0; })
-            .attr("y", function(d) { return -5; })
-            .text(function(d) { return d[0] ;});
+        for (var ns = 1; ns <= numSongs; ns++) {
+            console.log(theme_name, ns, song_contains_theme(theme_name, ns));
+            if (song_contains_theme(theme_name, ns)) {
+                var svgs = d3.select("#div2").append("svg")
+                    .attr("width", width * .5)
+                    .attr("height", song_split_height);
+
+                var g2 = svgs.append("g")
+                    .attr("id", "g" + ns)
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                g2.selectAll("rect")
+                    .data(data)
+                  .enter()
+                    .append("rect")
+                    .filter(function(d) { 
+                      return d.song_number == ns;
+                    })
+                    .attr("class", "enter")
+                    .attr("theme", function(d) { return d.theme_name; })
+                    .attr("width", function(d) {return width_of_theme_by_song(d);})
+                    .attr("x", function(d) { return x_pos_by_song(d); })
+                    .attr("y", function(d) { return y_pos_by_song(d); })
+                    .attr("height", function(d) { return barHeight; })
+                    .style("fill", function(d) { return color(d.theme_name); });
+                    // .on('mouseenter', function(d){
+                    //     elongate_bar(d, data, svgs, true);
+                    //     // hover_display(d, this.parentNode.id, "#div2");
+                    // });
+                    // .on('mouseleave', function(d) {
+                    //     reset_bar(d, data, svgs, true);
+                    // });
+
+                g2.selectAll("text")
+                    .data(songs)
+                  .enter().append("text")
+                    .filter(function(d) {
+                        return d[1] == ns;
+                    })
+                    .attr("x", function(d) { return 0; })
+                    .attr("y", function(d) { return -5; })
+                    .text(function(d) { return d[0] ;});
+            }
+        }
     }
 
 
