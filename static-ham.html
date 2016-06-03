@@ -45,24 +45,29 @@
 
    var selectedthis = null;
    var selectedd = null;
+   var current_theme;
+
+    function reset_theme_list() {
+        if (selectedthis != null) {
+            num_clips = 0;
+            selectedthis.style.backgroundColor = "#EEEEEE";
+            d3.selectAll("rect").each(function(d, i){
+                if(d3.select(this).attr("theme") == current_theme){ 
+                    reset_bar(selectedd, data, svg, false);         
+                }
+            })
+        }
+    }
 
     function print_themes(unique_themes) {
-        var current_theme;
         for (var i = 0; i < unique_themes.length; i++) {
             d3.select("#themes-list")
                 .append("div")
+                    .attr("id", idname(unique_themes[i]))
                     .on('mousedown', function(d){
                         current_theme = this.textContent;
 
-                        if (selectedthis != null) {
-                            num_clips = 0;
-                            selectedthis.style.backgroundColor = "#EEEEEE";
-                            d3.selectAll("rect").each(function(d, i){
-                                if(d3.select(this).attr("theme") == current_theme){ 
-                                    reset_bar(selectedd, data, svg, false);         
-                                }
-                            })
-                        }
+                        reset_theme_list();
 
                         selectedthis = this;
                         selectedd = d;
@@ -328,12 +333,24 @@
        
     };
 
+    function idname(string) {
+        return string.replace(/\W/g, '');
+    }
+
     function hoverIn(d){
+        num_clips = 0;
+        if (selectedthis != null) {
+             selectedthis.style.backgroundColor = "#EEEEEE";
+        }
+
         if (d.theme_name == "none") {
             reset_bar(d, data, svg, false);
             hover_display(d, "#div1");
             song_split(d.theme_name);
         } else {
+            selectedthis = document.getElementById(idname(d.theme_name));
+            selectedthis.style.backgroundColor = color(d.theme_name);
+            selectedd = d;
             elongate_bar(d, data, svg, false);
             hover_display(d, "#div1");
             song_split(d.theme_name);
@@ -394,7 +411,6 @@
         d3.select("#div2").selectAll("svg").remove();
 
         for (var ns = 1; ns <= numSongs; ns++) {
-            console.log(theme_name, ns, song_contains_theme(theme_name, ns));
             if (song_contains_theme(theme_name, ns)) {
                 var svgs = d3.select("#div2").append("svg")
                     .attr("width", width * .5)
