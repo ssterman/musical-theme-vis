@@ -396,6 +396,16 @@
             .style("fill", function(d) { return color(d.theme_name); });
                     
 
+        g.append("text")
+            .attr("x", 0)
+            .attr("y", -5)
+            .text("Act 1");
+
+        g.append("text")
+            .attr("x", 0)
+            .attr("y", 100 )
+            .text("Act 2");
+
         rects.each(function(d, i) {
             tempd = d;
           return $(this).hoverIntent((function() {
