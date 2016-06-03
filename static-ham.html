@@ -43,13 +43,29 @@
    var current_color;
    var num_clips = 0;
 
+   var selectedthis = null;
+   var selectedd = null;
+
     function print_themes(unique_themes) {
         var current_theme;
         for (var i = 0; i < unique_themes.length; i++) {
             d3.select("#themes-list")
                 .append("div")
-                    .on('mouseenter', function(d){
+                    .on('mousedown', function(d){
                         current_theme = this.textContent;
+
+                        if (selectedthis != null) {
+                            num_clips = 0;
+                            selectedthis.style.backgroundColor = "#EEEEEE";
+                            d3.selectAll("rect").each(function(d, i){
+                                if(d3.select(this).attr("theme") == current_theme){ 
+                                    reset_bar(selectedd, data, svg, false);         
+                                }
+                            })
+                        }
+
+                        selectedthis = this;
+                        selectedd = d;
 
                         // find rects that have this theme and elongate_bar
                         svg.selectAll("rect").each(function(d, i){
@@ -66,15 +82,15 @@
 
                     })
                 
-                    .on('mouseleave', function(d) {
-                        num_clips = 0;
-                        this.style.backgroundColor = "#EEEEEE";
-                        d3.selectAll("rect").each(function(d, i){
-                            if(d3.select(this).attr("theme") == current_theme){ 
-                                reset_bar(d, data, svg, false);         
-                            }
-                        })
-                    })
+                    // .on('mouseleave', function(d) {
+                    //     num_clips = 0;
+                    //     this.style.backgroundColor = "#EEEEEE";
+                    //     d3.selectAll("rect").each(function(d, i){
+                    //         if(d3.select(this).attr("theme") == current_theme){ 
+                    //             reset_bar(d, data, svg, false);         
+                    //         }
+                    //     })
+                    // })
                 .attr("class", "theme-item")
                 .text(unique_themes[i]);
         }
