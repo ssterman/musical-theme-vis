@@ -55,9 +55,10 @@
                         svg.selectAll("rect").each(function(d, i){
                             if(d3.select(this).attr("theme") == current_theme){ 
                                 num_clips++;
+                                hoverIn(d);
                                 current_color = color(d.theme_name);
-                                elongate_bar(d, data, svg, false); 
-                                hover_display(d, this.parentNode.id, "#div1");          
+                                // elongate_bar(d, data, svg, false); 
+                                // hover_display(d, this.parentNode.id, "#div1");          
                             }
                         })
 
