@@ -247,7 +247,7 @@
                                 return y_pos_by_act(d1.song_number); //                             
                             }
                         })
-                        .each("end", function() {
+                        .each("start", function() {
                             d3.select("#info_panel_1").transition().duration(100).style("background-color", convertHex(fill_color, 30));
                         });
     };
