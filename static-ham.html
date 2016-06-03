@@ -22,6 +22,18 @@
 
     d3.csv("output.csv", function(data) {
 
+    var songs_to_themes = {};
+    data.forEach(function(datum) {
+        if (songs_to_themes.hasOwnProperty(datum.song_name)) {
+            if (songs_to_themes[datum.song_name].indexOf(datum.theme_name) < 0) {
+                songs_to_themes[datum.song_name].push(datum.theme_name);
+            }
+        } else {
+            songs_to_themes[datum.song_name] = [ datum.theme_name ];
+        }
+    });
+    console.log(songs_to_themes);
+
     var unique_themes = [];
     data.forEach(function(datum) {
         if (unique_themes.indexOf(datum.theme_name) == -1 && datum.theme_name != "none") {
@@ -448,7 +460,8 @@
                     })
                     .attr("x", function(d) { return 0; })
                     .attr("y", function(d) { return -5; })
-                    .text(function(d) { return d[0] ;});
+                    .html(function(d) { return d[0] ;});
+
             }
         }
     }
