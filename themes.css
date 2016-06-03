@@ -12,6 +12,11 @@ h2, h3, h4, h5 {
 	font-variant: small-caps;
 }
 
+.smallcaps {
+	font-variant: small-caps;
+	font-size: 14px;
+}
+
 #songstitle {
 	padding-left: 40px;
 }
@@ -74,7 +79,7 @@ songs {
 
 .lyrics {
 	overflow: auto;
-	height: 120px;
+	height: 160px;
 	width: 50%;
 	margin-left: 24%;
 }

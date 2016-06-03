@@ -308,7 +308,7 @@
             var ip = d3.select("#info_panel_1")
                 .append("div")
                     .attr("class", "info_panel")
-                    .html('Theme: ' + d.theme_name + ' | ' + 'Song: "' + d.song_name + '"' + "<br/>");   // +'This theme appears ' + num_clips + ' times');
+                    .html('<span class="smallcaps">Theme:</span> ' + d.theme_name + ' | ' + '<span class="smallcaps">Song:</span> "' + d.song_name + '"' + "<br/>");   // +'This theme appears ' + num_clips + ' times');
 
             ip.append("br");
 
@@ -319,8 +319,6 @@
                 .attr("src", "music/" + encodeURIComponent(song_url) + "#t=" + d.start_sec + "," + end_time)
                 .attr("controls", "")
                 .text("Your browser does not support the <code>audio</code> element");
-
-            ip.append("p");
 
             ip.append("div")
                 .attr("class", "lyrics")
