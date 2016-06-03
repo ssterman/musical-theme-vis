@@ -370,7 +370,9 @@
     function hoverOut(d) {
     };
 
-// display data, starting in a single bar for the whole musical
+
+    var tempd;
+    // display data, starting in a single bar for the whole musical
     var svg = d3.select("#div1").append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -395,14 +397,16 @@
                     
 
         rects.each(function(d, i) {
+            tempd = d;
           return $(this).hoverIntent((function() {
             return hoverIn(d);
           }), (function() {
             return hoverOut(d);
           }));
         });
-        
-}
+    }
+
+    reset_bar(tempd, data, svg, false);
 
 
     function song_contains_theme(theme, number) {
